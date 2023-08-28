@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { message } from 'src/config';
 import { ClientService } from '../client/client.service';
 import { MailService } from '../mail/mail.service';
 import { SigninEntity } from './entities/signin.entity';
@@ -17,27 +18,30 @@ export class AuthService {
     private mailService: MailService,
   ) {}
 
-  async signIn(email: string, password: string): Promise<SigninEntity> {
-    const user = await this.clientService.findByEmail(email);
+  async signIn(email_address: string, password: string): Promise<SigninEntity> {
+    try {
+      const user = await this.clientService.findByEmail(email_address);
+      const isMatch = await bcrypt.compare(password, user.password);
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
+      if (!isMatch) {
+        throw new UnauthorizedException();
+      }
+      const payload = {
+        email_address: user.email_address,
+        role: user.role,
+      };
+
+      return new SigninEntity({
+        ...user,
+        token: await this.jwtService.signAsync(payload),
+      });
+    } catch (error) {
       throw new UnauthorizedException();
     }
-
-    const payload = {
-      email_address: user.email_address,
-      role: user.role,
-    };
-
-    return new SigninEntity({
-      ...user,
-      token: await this.jwtService.signAsync(payload),
-    });
   }
 
-  async forgotPassword(email: string) {
-    const user = await this.clientService.findByEmail(email);
+  async forgotPassword(email_address: string) {
+    const user = await this.clientService.findByEmail(email_address);
 
     if (!user) {
       throw new NotFoundException();
@@ -50,10 +54,12 @@ export class AuthService {
 
     const token = await this.jwtService.signAsync(payload);
 
-    return await this.mailService.sendForgotPassword(
+    await this.mailService.sendForgotPassword(
       user.email_address,
       user.name,
       token,
     );
+
+    return message.send_email;
   }
 }

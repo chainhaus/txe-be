@@ -8,7 +8,6 @@ import {
   Delete,
   UseInterceptors,
   ClassSerializerInterceptor,
-  Put,
 } from '@nestjs/common';
 import { ClientService } from './client.service';
 import { CreateClientDto } from './dto/create-client.dto';
@@ -33,16 +32,16 @@ export class ClientController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return new ClientEntity(await this.clientService.findOne(id));
+    return new ClientEntity(await this.clientService.findOne(+id));
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateClientDto) {
-    return this.clientService.update(id, updateUserDto);
+    return this.clientService.update(+id, updateUserDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.clientService.remove(id);
+    return this.clientService.remove(+id);
   }
 }

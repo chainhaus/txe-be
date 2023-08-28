@@ -7,6 +7,7 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
   BadRequestException,
+  Request,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
@@ -28,16 +29,16 @@ export class AuthController {
 
   @Public()
   @HttpCode(HttpStatus.OK)
-  @Post('login')
+  @Post('signin')
   signIn(@Body() payload: SigninDto) {
-    return this.authService.signIn(payload.email, payload.password);
+    return this.authService.signIn(payload.email_address, payload.password);
   }
 
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('forgot-password')
   forgotPassword(@Body() payload: ForgotPasswordDto) {
-    return this.authService.forgotPassword(payload.email);
+    return this.authService.forgotPassword(payload.email_address);
   }
 
   @Public()
@@ -54,14 +55,16 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('reset-password')
-  async resetPassword(@Body() payload: ResetPasswordDto) {
+  async resetPassword(@Body() payload: ResetPasswordDto, @Request() request) {
     if (payload.password !== payload.confirm_password) {
       throw new BadRequestException(
         'Confirm password should match with Password',
       );
     }
 
-    const user = await this.clientService.findByEmail(payload.email);
+    const user = await this.clientService.findByEmail(
+      request.user.email_address,
+    );
 
     return this.clientService.update(user.id, payload);
   }

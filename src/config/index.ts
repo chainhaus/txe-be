@@ -7,3 +7,7 @@ export const jwtConstants = {
 };
 
 export const s3PublicBucket = 'blistmediapublic';
+
+export const message = {
+  send_email: 'Send email successfully',
+};

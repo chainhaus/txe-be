@@ -6,8 +6,7 @@ export class MailService {
   constructor(private mailerService: MailerService) {}
 
   async sendForgotPassword(email: string, fullname: string, token: string) {
-    console.log(process.env.SITE_URL);
-    const url = `example.com/auth/confirm?token=${token}`;
+    const url = `${process.env.SITE_URL}/auth/confirm?token=${token}`;
 
     await this.mailerService.sendMail({
       to: email,

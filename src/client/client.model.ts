@@ -1,13 +1,28 @@
-import { Column, Model, Table } from 'sequelize-typescript';
+import {
+  Column,
+  Model,
+  Table,
+  PrimaryKey,
+  AutoIncrement,
+  AllowNull,
+} from 'sequelize-typescript';
 
-@Table
+@Table({ timestamps: true })
 export class Client extends Model {
+  @PrimaryKey
+  @AutoIncrement
+  @AllowNull(false)
+  @Column
+  id: number;
+
   @Column
   name: string;
 
+  @AllowNull(false)
   @Column
   password: string;
 
+  @AllowNull(false)
   @Column
   email_address: string;
 

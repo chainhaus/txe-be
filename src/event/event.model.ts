@@ -6,7 +6,7 @@ export class Event extends Model {
   title: string;
 
   @Column
-  Date: Date;
+  date: Date;
 
   @Column
   start_time: Date;

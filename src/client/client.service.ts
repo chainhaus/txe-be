@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { InjectModel } from '@nestjs/sequelize';
 import { saltOrRounds } from '../config';
@@ -8,7 +8,7 @@ import { UpdateClientDto } from './dto/update-client.dto';
 
 @Injectable()
 export class ClientService {
-  constructor(@InjectModel(Client) private userModel: typeof Client) {}
+  constructor(@InjectModel(Client) private clientModel: typeof Client) {}
 
   async create(createUserDto: CreateClientDto): Promise<Client> {
     if (createUserDto.password) {
@@ -17,25 +17,39 @@ export class ClientService {
         saltOrRounds,
       );
     }
-    const client = await this.userModel.create({
-      name: createUserDto.name,
-      email_address: createUserDto.email_address,
-      password: createUserDto.password,
-      open_to_partnership: createUserDto.open_to_partnership,
-      api_key: createUserDto.api_key,
-      role: createUserDto.role,
-      email_verified: createUserDto.email_verified,
-    });
-    return client;
+
+    try {
+      const client = await this.clientModel.create({
+        name: createUserDto.name,
+        email_address: createUserDto.email_address,
+        password: createUserDto.password,
+        open_to_partnership: createUserDto.open_to_partnership,
+        api_key: createUserDto.api_key,
+        role: createUserDto.role,
+        email_verified: createUserDto.email_verified,
+      });
+      return client.dataValues;
+    } catch (error) {
+      throw new BadRequestException(error.original.message || error.message);
+    }
   }
 
   async findAll(): Promise<Client[]> {
-    return this.userModel.findAll();
+    try {
+      const clients = await this.clientModel.findAll();
+      return clients.map((item) => item.dataValues);
+    } catch (error) {
+      throw new BadRequestException(error.original.message || error.message);
+    }
   }
 
   async findOne(id: number): Promise<Client> {
-    const client = await this.userModel.findOne({ where: { id } });
-    return client;
+    try {
+      const client = await this.clientModel.findOne({ where: { id } });
+      return client.dataValues;
+    } catch (error) {
+      throw new BadRequestException(error.original.message || error.message);
+    }
   }
 
   async update(id: number, updateUserDto: UpdateClientDto) {
@@ -46,20 +60,35 @@ export class ClientService {
       );
     }
 
-    const client = await this.findOne(id);
-    client.set(updateUserDto);
-
-    return client;
+    try {
+      const client = await this.clientModel.findOne({ where: { id } });
+      await client.set(updateUserDto);
+      await client.save();
+      return client.dataValues;
+    } catch (error) {
+      throw new BadRequestException(error.original.message || error.message);
+    }
   }
 
   async remove(id: number): Promise<Client> {
-    const client = await this.findOne(id);
-    await client.destroy();
-    return client;
+    try {
+      const client = await this.clientModel.findOne({ where: { id } });
+      await client.destroy();
+      return client.dataValues;
+    } catch (error) {
+      throw new BadRequestException(error.original.message || error.message);
+    }
   }
 
-  async findByEmail(email: string): Promise<Client> {
-    const client = await this.userModel.findOne({ where: { email } });
-    return client;
+  async findByEmail(email_address: string): Promise<Client> {
+    try {
+      const client = await this.clientModel.findOne({
+        where: { email_address },
+      });
+
+      return client.dataValues;
+    } catch (error) {
+      throw new BadRequestException(error.original.message || error.message);
+    }
   }
 }

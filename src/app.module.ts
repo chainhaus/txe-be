@@ -9,6 +9,8 @@ import { Order } from './order/order.model';
 import { Partnership } from './partnership/partnership.model';
 import { Ticket } from './ticket/ticket.model';
 
+import { MailModule } from './mail/mail.module';
+import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './client/client.module';
 import { EventModule } from './event/event.module';
 import { TicketModule } from './ticket/ticket.module';
@@ -24,15 +26,6 @@ import { OrderModule } from './order/order.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        console.log({
-          type: 'postgres',
-          host: configService.get('HOST'),
-          port: +configService.get('PORT'),
-          username: configService.get('USERNAME'),
-          password: configService.get('PASSWORD'),
-          database: configService.get('DATABASE'),
-          models: [Client, Event, Order, Partnership, Ticket],
-        });
         return {
           dialect: 'postgres',
           host: configService.get('HOST'),
@@ -40,10 +33,13 @@ import { OrderModule } from './order/order.module';
           username: configService.get('USERNAME'),
           password: configService.get('PASSWORD'),
           database: configService.get('DATABASE'),
-          models: [Client],
+          omitNull: true,
+          models: [Client, Event, Order, Partnership, Ticket],
         };
       },
     }),
+    MailModule,
+    AuthModule,
     UsersModule,
     EventModule,
     TicketModule,
