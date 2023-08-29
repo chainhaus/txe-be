@@ -1,26 +1,66 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { Event } from './event.model';
 
 @Injectable()
 export class EventService {
-  create(createEventDto: CreateEventDto) {
-    return 'This action adds a new event';
+  constructor(@InjectModel(Event) private eventModel: typeof Event) {}
+
+  async create(createEventDto: CreateEventDto) {
+    try {
+      const data = await this.eventModel.create({
+        title: createEventDto.title,
+        date: createEventDto.date,
+        start_time: createEventDto.start_time,
+        end_time: createEventDto.end_time,
+        Location: createEventDto.Location,
+        enabled: createEventDto.enabled,
+        private: createEventDto.private,
+      });
+      return data.dataValues;
+    } catch (error) {
+      throw new BadRequestException(error.original.message || error.message);
+    }
   }
 
-  findAll() {
-    return `This action returns all event`;
+  async findAll() {
+    try {
+      const datas = await this.eventModel.findAll();
+      return datas.map((item) => item.dataValues);
+    } catch (error) {
+      throw new BadRequestException(error.original.message || error.message);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} event`;
+  async findOne(id: number) {
+    try {
+      const data = await this.eventModel.findOne({ where: { id } });
+      return data.dataValues;
+    } catch (error) {
+      throw new BadRequestException(error.original.message || error.message);
+    }
   }
 
-  update(id: number, updateEventDto: UpdateEventDto) {
-    return `This action updates a #${id} event`;
+  async update(id: number, updateEventDto: UpdateEventDto) {
+    try {
+      const data = await this.eventModel.findOne({ where: { id } });
+      await data.set(updateEventDto);
+      await data.save();
+      return data.dataValues;
+    } catch (error) {
+      throw new BadRequestException(error.original.message || error.message);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} event`;
+  async remove(id: number) {
+    try {
+      const data = await this.eventModel.findOne({ where: { id } });
+      await data.destroy();
+      return data.dataValues;
+    } catch (error) {
+      throw new BadRequestException(error.original.message || error.message);
+    }
   }
 }
