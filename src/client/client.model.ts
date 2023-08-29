@@ -37,4 +37,7 @@ export class Client extends Model {
 
   @Column({ defaultValue: true })
   email_verified: boolean;
+
+  @Column({ defaultValue: true })
+  enabled: boolean;
 }

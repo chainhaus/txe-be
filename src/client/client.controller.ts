@@ -9,6 +9,9 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
 } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
+import { saltOrRounds } from 'src/config';
 import { ClientService } from './client.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
@@ -43,5 +46,12 @@ export class ClientController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.clientService.remove(+id);
+  }
+
+  @Post('generate-key/:id')
+  async generateKey(@Param('id') id: string) {
+    const token = uuidv4();
+    const hashedToken = await bcrypt.hash(token, saltOrRounds);
+    return this.clientService.update(+id, { api_key: hashedToken });
   }
 }

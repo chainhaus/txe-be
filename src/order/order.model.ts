@@ -37,4 +37,7 @@ export class Order extends Model {
 
   @Column
   fee_to_txe: number;
+
+  @Column({ defaultValue: true })
+  valid: boolean;
 }

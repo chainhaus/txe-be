@@ -1,26 +1,63 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
+import { Ticket } from './ticket.model';
 
 @Injectable()
 export class TicketService {
-  create(createTicketDto: CreateTicketDto) {
-    return 'This action adds a new ticket';
+  constructor(@InjectModel(Ticket) private orderModel: typeof Ticket) {}
+
+  async create(createTicketDto: CreateTicketDto) {
+    try {
+      const data = await this.orderModel.create({
+        event_id: createTicketDto.event_id,
+        name: createTicketDto.name,
+        price: createTicketDto.price,
+        enabled: createTicketDto.enabled,
+      });
+      return data.dataValues;
+    } catch (error) {
+      throw new BadRequestException(error.original.message || error.message);
+    }
   }
 
-  findAll() {
-    return `This action returns all ticket`;
+  async findAll(query) {
+    try {
+      const datas = await this.orderModel.findAll(query);
+      return datas.map((item) => item.dataValues);
+    } catch (error) {
+      throw new BadRequestException(error.original.message || error.message);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} ticket`;
+  async findOne(id: number) {
+    try {
+      const data = await this.orderModel.findOne({ where: { id } });
+      return data.dataValues;
+    } catch (error) {
+      throw new BadRequestException(error.original.message || error.message);
+    }
   }
 
-  update(id: number, updateTicketDto: UpdateTicketDto) {
-    return `This action updates a #${id} ticket`;
+  async update(id: number, updateTicketDto: UpdateTicketDto) {
+    try {
+      const data = await this.orderModel.findOne({ where: { id } });
+      await data.set(updateTicketDto);
+      await data.save();
+      return data.dataValues;
+    } catch (error) {
+      throw new BadRequestException(error.original.message || error.message);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} ticket`;
+  async remove(id: number) {
+    try {
+      const data = await this.orderModel.findOne({ where: { id } });
+      await data.destroy();
+      return data.dataValues;
+    } catch (error) {
+      throw new BadRequestException(error.original.message || error.message);
+    }
   }
 }

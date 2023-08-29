@@ -10,7 +10,7 @@ export class Ticket extends Model {
   @Column
   name: string;
 
-  @Column
+  @Column({ defaultValue: 0 })
   price: number;
 
   @Column({ defaultValue: true })

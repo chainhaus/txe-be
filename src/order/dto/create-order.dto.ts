@@ -12,4 +12,6 @@ export class CreateOrderDto {
 
   amount_paid: number;
   fee_to_txe: number;
+
+  valid: boolean;
 }

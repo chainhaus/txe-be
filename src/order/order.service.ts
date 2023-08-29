@@ -22,9 +22,9 @@ export class OrderService {
     }
   }
 
-  async findAll() {
+  async findAll(query = {}) {
     try {
-      const datas = await this.orderModel.findAll();
+      const datas = await this.orderModel.findAll(query);
       return datas.map((item) => item.dataValues);
     } catch (error) {
       throw new BadRequestException(error.original.message || error.message);

@@ -9,6 +9,8 @@ import {
   BadRequestException,
   Request,
 } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from './auth.service';
 import {
   SigninDto,
@@ -18,6 +20,7 @@ import {
 } from './dto/auth.dto';
 import { Public } from './auth.decorator';
 import { ClientService } from '../client/client.service';
+import { saltOrRounds } from 'src/config';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('auth')
@@ -44,12 +47,17 @@ export class AuthController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('signup')
-  signup(@Body() payload: SignupDto) {
+  async signup(@Body() payload: SignupDto) {
     if (payload.password !== payload.confirm_password) {
       throw new BadRequestException(
         'Confirm password should match with Password',
       );
     }
+
+    const token = uuidv4();
+    const hashedToken = await bcrypt.hash(token, saltOrRounds);
+    payload.api_key = hashedToken;
+
     return this.clientService.create(payload);
   }
 

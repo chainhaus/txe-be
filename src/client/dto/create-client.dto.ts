@@ -9,7 +9,7 @@ export class CreateClientDto {
   password: string;
 
   readonly open_to_partnership: string;
-  readonly api_key: string;
+  api_key: string;
   readonly role: string;
   readonly email_verified: boolean;
 }
