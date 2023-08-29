@@ -30,7 +30,7 @@ export class Client extends Model {
   role: string;
 
   @Column
-  open_to_partnership: string;
+  open_to_partnership: boolean;
 
   @Column
   api_key: string;
