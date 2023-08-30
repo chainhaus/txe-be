@@ -35,7 +35,8 @@ export class ClientController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return new ClientEntity(await this.clientService.findOne(+id));
+    const client = await this.clientService.findOne(+id);
+    return new ClientEntity(client);
   }
 
   @Patch(':id')
