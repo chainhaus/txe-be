@@ -15,7 +15,7 @@ export class EventService {
         date: createEventDto.date,
         start_time: createEventDto.start_time,
         end_time: createEventDto.end_time,
-        Location: createEventDto.Location,
+        location: createEventDto.location,
         enabled: createEventDto.enabled,
         private: createEventDto.private,
       });

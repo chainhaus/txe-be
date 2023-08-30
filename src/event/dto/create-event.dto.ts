@@ -6,7 +6,7 @@ export class CreateEventDto {
   date: string;
   start_time: string;
   end_time: string;
-  Location: string;
+  location: string;
   enabled: boolean;
   private: boolean;
 }

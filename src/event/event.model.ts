@@ -15,7 +15,7 @@ export class Event extends Model {
   end_time: Date;
 
   @Column
-  Location: string;
+  location: string;
 
   @Column({ defaultValue: true })
   enabled: boolean;
