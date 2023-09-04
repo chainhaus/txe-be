@@ -34,9 +34,9 @@ export class ClientService {
     }
   }
 
-  async findAll(): Promise<Client[]> {
+  async findAll(query = {}): Promise<Client[]> {
     try {
-      const clients = await this.clientModel.findAll();
+      const clients = await this.clientModel.findAll(query);
       return clients.map((item) => item.dataValues);
     } catch (error) {
       throw new BadRequestException(error.original.message || error.message);

@@ -8,6 +8,7 @@ import {
   Delete,
   UseInterceptors,
   ClassSerializerInterceptor,
+  Query,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
@@ -28,8 +29,14 @@ export class ClientController {
   }
 
   @Get()
-  async findAll() {
-    const users = await this.clientService.findAll();
+  async findAll(@Query() queryParams: { open_to_partnership?: string }) {
+    const query = { where: {} };
+    if (queryParams.open_to_partnership) {
+      query.where = {
+        open_to_partnership: queryParams.open_to_partnership === 'true',
+      };
+    }
+    const users = await this.clientService.findAll(query);
     return users.map((user) => new ClientEntity(user));
   }
 
