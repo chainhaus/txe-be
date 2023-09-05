@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Put,
+  Query,
 } from '@nestjs/common';
 import { EventService } from './event.service';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -22,8 +23,15 @@ export class EventController {
   }
 
   @Get()
-  findAll() {
-    return this.eventService.findAll();
+  findAll(@Query() params: { private?: boolean }) {
+    const query: { where?: object } = {};
+    if (typeof params.private === 'string') {
+      query.where = {
+        private: params.private,
+      };
+    }
+    console.log(query, params, typeof params.private);
+    return this.eventService.findAll(query);
   }
 
   @Get(':id')

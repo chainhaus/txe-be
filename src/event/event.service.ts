@@ -25,9 +25,10 @@ export class EventService {
     }
   }
 
-  async findAll() {
+  async findAll(query = {}) {
     try {
       const datas = await this.eventModel.findAll({
+        ...query,
         order: [['id', 'DESC']],
       });
       return datas.map((item) => item.dataValues);
