@@ -27,7 +27,9 @@ export class EventService {
 
   async findAll() {
     try {
-      const datas = await this.eventModel.findAll();
+      const datas = await this.eventModel.findAll({
+        order: [['id', 'DESC']],
+      });
       return datas.map((item) => item.dataValues);
     } catch (error) {
       throw new BadRequestException(error.original.message || error.message);

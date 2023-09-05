@@ -24,7 +24,10 @@ export class OrderService {
 
   async findAll(query = {}) {
     try {
-      const datas = await this.orderModel.findAll(query);
+      const datas = await this.orderModel.findAll({
+        ...query,
+        order: [['id', 'DESC']],
+      });
       return datas.map((item) => item.dataValues);
     } catch (error) {
       throw new BadRequestException(error.original.message || error.message);

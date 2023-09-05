@@ -5,6 +5,7 @@ import { saltOrRounds } from '../config';
 import { Client } from './client.model';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
+import { OrderItem } from 'sequelize';
 
 @Injectable()
 export class ClientService {
@@ -34,9 +35,15 @@ export class ClientService {
     }
   }
 
-  async findAll(query = {}): Promise<Client[]> {
+  async findAll(
+    query = {},
+    order: OrderItem = ['id', 'DESC'],
+  ): Promise<Client[]> {
     try {
-      const clients = await this.clientModel.findAll(query);
+      const clients = await this.clientModel.findAll({
+        ...query,
+        order: [order],
+      });
       return clients.map((item) => item.dataValues);
     } catch (error) {
       throw new BadRequestException(error.original.message || error.message);
