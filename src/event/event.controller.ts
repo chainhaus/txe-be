@@ -30,7 +30,6 @@ export class EventController {
         private: params.private,
       };
     }
-    console.log(query, params, typeof params.private);
     return this.eventService.findAll(query);
   }
 
