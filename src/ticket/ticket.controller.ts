@@ -21,8 +21,12 @@ export class TicketController {
   }
 
   @Get()
-  findAll(@Query() query: { eventId: string }) {
-    return this.ticketService.findAll({ where: { event_id: +query.eventId } });
+  findAll(@Query() { eventId }: { eventId?: string }) {
+    const query: { where?: object } = {};
+    if (eventId) {
+      query.where = { eventId: +eventId };
+    }
+    return this.ticketService.findAll(query);
   }
 
   @Patch(':id')
