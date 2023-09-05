@@ -16,6 +16,7 @@ import { EventModule } from './event/event.module';
 import { TicketModule } from './ticket/ticket.module';
 import { PartnershipModule } from './partnership/partnership.module';
 import { OrderModule } from './order/order.module';
+import { StripeModule } from './stripe/stripe.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { OrderModule } from './order/order.module';
     TicketModule,
     PartnershipModule,
     OrderModule,
+    StripeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
