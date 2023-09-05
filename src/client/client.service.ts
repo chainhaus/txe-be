@@ -37,12 +37,12 @@ export class ClientService {
 
   async findAll(
     query = {},
-    order: OrderItem = ['id', 'DESC'],
+    order: OrderItem[] = [['id', 'DESC']],
   ): Promise<Client[]> {
     try {
       const clients = await this.clientModel.findAll({
         ...query,
-        order: [order],
+        order,
       });
       return clients.map((item) => item.dataValues);
     } catch (error) {
