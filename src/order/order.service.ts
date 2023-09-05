@@ -3,6 +3,9 @@ import { InjectModel } from '@nestjs/sequelize';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Order } from './order.model';
+import { Ticket } from 'src/ticket/ticket.model';
+import { Client } from 'src/client/client.model';
+import { Event } from 'src/event/event.model';
 @Injectable()
 export class OrderService {
   constructor(@InjectModel(Order) private orderModel: typeof Order) {}
@@ -27,6 +30,11 @@ export class OrderService {
       const datas = await this.orderModel.findAll({
         ...query,
         order: [['id', 'DESC']],
+        include: [
+          { model: Event },
+          { model: Ticket },
+          { model: Client, attributes: { exclude: ['password'] } },
+        ],
       });
       return datas.map((item) => item.dataValues);
     } catch (error) {
