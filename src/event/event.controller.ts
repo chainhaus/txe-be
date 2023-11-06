@@ -8,18 +8,23 @@ import {
   Delete,
   Put,
   Query,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { EventService } from './event.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { EventEntity } from './entities/event.entity';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('event')
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
   @Post()
-  create(@Body() createEventDto: CreateEventDto) {
-    return this.eventService.create(createEventDto);
+  async create(@Body() createEventDto: CreateEventDto) {
+    const data = await this.eventService.create(createEventDto);
+    return new EventEntity(data);
   }
 
   @Get()

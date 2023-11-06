@@ -13,9 +13,9 @@ export class EventService {
       const data = await this.eventModel.create({
         title: createEventDto.title,
         date: createEventDto.date,
+        location: createEventDto.location,
         start_time: createEventDto.start_time,
         end_time: createEventDto.end_time,
-        location: createEventDto.location,
         enabled: createEventDto.enabled,
         private: createEventDto.private,
       });

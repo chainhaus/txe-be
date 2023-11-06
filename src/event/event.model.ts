@@ -9,13 +9,13 @@ export class Event extends Model {
   date: Date;
 
   @Column
+  location: string;
+
+  @Column
   start_time: Date;
 
   @Column
   end_time: Date;
-
-  @Column
-  location: string;
 
   @Column({ defaultValue: true })
   enabled: boolean;
