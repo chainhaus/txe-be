@@ -6,7 +6,7 @@ import { AppService } from './app.service';
 import { Client } from './client/client.model';
 import { Event } from './event/event.model';
 import { Order } from './order/order.model';
-import { Partnership } from './partnership/partnership.model';
+import { Affiliate } from './affiliate/affiliate.model';
 import { Ticket } from './ticket/ticket.model';
 
 import { MailModule } from './mail/mail.module';
@@ -14,7 +14,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './client/client.module';
 import { EventModule } from './event/event.module';
 import { TicketModule } from './ticket/ticket.module';
-import { PartnershipModule } from './partnership/partnership.module';
+import { AffiliateModule } from './affiliate/affiliate.module';
 import { OrderModule } from './order/order.module';
 import { StripeModule } from './stripe/stripe.module';
 
@@ -35,7 +35,7 @@ import { StripeModule } from './stripe/stripe.module';
           password: configService.get('PASSWORD'),
           database: configService.get('DATABASE'),
           omitNull: true,
-          models: [Client, Event, Order, Partnership, Ticket],
+          models: [Client, Event, Order, Affiliate, Ticket],
         };
       },
     }),
@@ -44,7 +44,7 @@ import { StripeModule } from './stripe/stripe.module';
     UsersModule,
     EventModule,
     TicketModule,
-    PartnershipModule,
+    AffiliateModule,
     OrderModule,
     StripeModule,
   ],

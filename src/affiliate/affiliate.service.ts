@@ -1,19 +1,19 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { CreatePartnershipDto } from './dto/create-partnership.dto';
-import { UpdatePartnershipDto } from './dto/update-partnership.dto';
-import { Partnership } from './partnership.model';
+import { CreateAffiliateDto } from './dto/create-affiliate.dto';
+import { UpdateAffiliateDto } from './dto/update-affiliate.dto';
+import { Affiliate } from './affiliate.model';
 import { Client } from 'src/client/client.model';
 
 @Injectable()
-export class PartnershipService {
+export class AffiliateService {
   constructor(
-    @InjectModel(Partnership) private partnerShipModel: typeof Partnership,
+    @InjectModel(Affiliate) private affiliateModel: typeof Affiliate,
   ) {}
 
-  async create(createDto: CreatePartnershipDto) {
+  async create(createDto: CreateAffiliateDto) {
     try {
-      const data = await this.partnerShipModel.create({
+      const data = await this.affiliateModel.create({
         requested_by_client_id: createDto.requested_by_client_id,
         requested_of_client_id: createDto.requested_of_client_id,
         rev_share_pct: createDto.rev_share_pct,
@@ -27,7 +27,7 @@ export class PartnershipService {
 
   async findAll(query = {}) {
     try {
-      const datas = await this.partnerShipModel.findAll({
+      const datas = await this.affiliateModel.findAll({
         ...query,
         order: [['id', 'DESC']],
         include: [
@@ -52,16 +52,16 @@ export class PartnershipService {
 
   async findOne(id: number) {
     try {
-      const data = await this.partnerShipModel.findOne({ where: { id } });
+      const data = await this.affiliateModel.findOne({ where: { id } });
       return data.dataValues;
     } catch (error) {
       throw new BadRequestException(error.original.message || error.message);
     }
   }
 
-  async update(id: number, updateDto: UpdatePartnershipDto) {
+  async update(id: number, updateDto: UpdateAffiliateDto) {
     try {
-      const data = await this.partnerShipModel.findOne({ where: { id } });
+      const data = await this.affiliateModel.findOne({ where: { id } });
       await data.set(updateDto);
       await data.save();
       return data.dataValues;
@@ -72,7 +72,7 @@ export class PartnershipService {
 
   async remove(id: number) {
     try {
-      const data = await this.partnerShipModel.findOne({ where: { id } });
+      const data = await this.affiliateModel.findOne({ where: { id } });
       await data.destroy();
       return data.dataValues;
     } catch (error) {

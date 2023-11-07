@@ -8,7 +8,7 @@ import {
 import { Client } from 'src/client/client.model';
 
 @Table
-export class Partnership extends Model {
+export class Affiliate extends Model {
   @ForeignKey(() => Client)
   @Column
   requested_by_client_id: number;
